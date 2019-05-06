@@ -6,6 +6,14 @@ module BlCommons
     class << self
       attr_accessor :password , :username, :token, :account_type
 
+      def logger
+        @@logger ||= ::Logger.new(Rails.root.join("log", "baidu_tongji.log"))
+      end
+
+      def logger=(logger)
+        @@logger = logger
+      end
+
       # ref: https://tongji.baidu.com/api/manual/Chapter2/
       def request_header_params
         {
