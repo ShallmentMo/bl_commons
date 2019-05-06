@@ -16,8 +16,11 @@ module BlCommons
         # read more: https://tongji.baidu.com/api/manual/Chapter1/getData.html
         def get_data(site_id, api_method, params = {})
           response = self.post "", body: generate_params_for(site_id, api_method, params).to_json
+          response = JSON.parse(response.body)
 
-          response.body
+          BlCommons::BaiduTongji.logger.error(response) if response.dig("header", "desc") != "success"
+
+          response
         end
 
         def generate_params_for(site_id, api_method, params)
