@@ -37,6 +37,24 @@ include BlCommons::SyncResourceConcern
 bl_sync_resource(attributes: %i[name avatar], nodes: [:b2c])
 ```
 
+### BaiduTongji
+
+* add `baidu_tongji.rb` to your initializers
+
+  ```ruby
+  BlCommons::BaiduTongji.username = "your username"
+  BlCommons::BaiduTongji.password = "********"
+  BlCommons::BaiduTongji.token = "***********"
+  ```
+
+* using `BlCommons::BaiduTongji::BaiduTongjiClient.get(site_id, api_method, params)` to request data from baidu tongji. [ref](https://tongji.baidu.com/api/manual/Chapter1/getData.html)
+
+* e.g.:
+
+  request:
+```ruby
+BlCommons::BaiduTongji::BaiduTongjiClient.get(site_id, "overview/getTimeTrendRpt", max_results: 0)
+```
 
 ## Installation
 Add this line to your application's Gemfile:
