@@ -6,9 +6,11 @@ module BlCommons
   module BlResources
     class ResourceClient
       include HTTParty
+      cattr_accessor :name
 
-      def initialize(host: '')
+      def initialize(host: '', name: '')
         self.class.base_uri "#{host}/bl_resources"
+        self.name = name
       end
 
       def fetch(path, params = {})
@@ -29,6 +31,10 @@ module BlCommons
 
       def sync(path, params = {})
         self.class.post("#{path}/sync", body: params)
+      end
+
+      def require_sync(path, params = {})
+        self.class.post("#{path}/require_sync", body: params)
       end
     end
   end

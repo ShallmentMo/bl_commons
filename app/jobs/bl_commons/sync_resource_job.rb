@@ -14,7 +14,7 @@ module BlCommons
           resource_params: object.send(:bl_sync_resource_params)
         )
 
-        raise "#{node}: 同步 #{model_name} #{id} 失败" if resp['error_message']
+        raise "#{node.name}: 同步 #{model_name} #{id} 失败，#{resp['error_message']}" if resp['error_message']
       end
     end
   end

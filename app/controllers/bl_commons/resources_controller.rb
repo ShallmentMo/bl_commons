@@ -60,15 +60,31 @@ module BlCommons
     # TODO: 鉴权
     def sync
       grfk = "#{model.model_name.singular}_id"
-      object = model.find_or_initialize_by(grfk.to_s => params.dig(grfk))
+      object = model.find_by(grfk.to_s => params.dig(grfk))
 
-      if object.update(params['resource_params'].permit!)
+      # 如果没找到资源则触发 job
+      unless object
+        BlCommons::PublishMissingResourceJob.perform_later(params[:resource_name], params.to_unsafe_h)
+        render(json: {}) && return
+      end
+
+      BlCommons::BlResources.set_attributes(object, params['resource_params'])
+
+      if object.save
         render json: parse_resource(object)
       else
         render json: { error_message: object.errors.full_messages.join(',') }
       end
     rescue StandardError => e
       render json: { error_message: e.message }
+    end
+
+    def require_sync
+      collection = model.ransack(params[:q]).result
+      collection.find_each do |object|
+        object.send(:bl_sync_resource) if object.class.private_method_defined?(:bl_sync_resource)
+      end
+      render json: {}
     end
 
     private

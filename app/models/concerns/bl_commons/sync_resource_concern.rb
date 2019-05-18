@@ -31,6 +31,10 @@ module BlCommons
       # class methods
 
       # instance methods
+      def bl_require_sync(node, path, params)
+        BlCommons::RequireSyncJob.perform_later(node.to_s, path.to_s, params)
+      end
+
       private
 
       def bl_sync_resource_nodes
