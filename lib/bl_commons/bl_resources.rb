@@ -6,10 +6,18 @@ module BlCommons
     self.registered_nodes = {}
 
     def self.register(name, options = { host: '' })
-      registered_nodes[name] = Class.new(ResourceClient).new(options)
+      registered_nodes[name] = Class.new(ResourceClient).new(options.merge({ name: name }))
 
       define_singleton_method name do
         registered_nodes[name]
+      end
+    end
+
+    def self.set_attributes(object, params)
+      params.each do |k, v|
+       next unless object.respond_to?(:"#{k}=")
+
+       object.send(:"#{k}=", v)
       end
     end
   end

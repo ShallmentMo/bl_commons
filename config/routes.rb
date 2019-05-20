@@ -1,5 +1,6 @@
 BlCommons::Engine.routes.draw do
   post '/bl_resources/:resource_name/sync', to: 'resources#sync'
+  post '/bl_resources/:resource_name/require_sync', to: 'resources#require_sync'
   get '/bl_resources/:resource_name', to: 'resources#index'
   post '/bl_resources/:resource_name', to: 'resources#create'
   get '/bl_resources/:resource_name/:id', to:  'resources#show'
