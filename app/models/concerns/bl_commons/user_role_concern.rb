@@ -6,8 +6,6 @@ module BlCommons
 
     included do
       belongs_to :role, optional: true
-      after_create :create_role
-      after_save :update_permissions, if: -> { role && saved_change_to_is_admin? }
     end
 
     def role_permissions
@@ -15,19 +13,7 @@ module BlCommons
       permitted_resources(role.permissions)
     end
 
-    def update_permissions
-      role.update(permissions_attributes: set_role_permissions)
-    end
-
-    def create_role
-      role = Role.create(
-        name: "超级管理员",
-        permissions_attributes: set_role_permissions
-      )
-      self.update_columns(role_id: role.id)
-    end
-
-    def set_role_permissions
+    def generate_role_permissions
       default_permissions = Role.new.permissions.to_h
       default_permissions = set_all_permissions_to_true(default_permissions) if is_admin
       default_permissions
