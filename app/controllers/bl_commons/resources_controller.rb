@@ -2,6 +2,8 @@
 
 module BlCommons
   class ResourcesController < ActionController::API
+    before_action :set_header_locale
+
     # TODO: 鉴权
     def index
       collection = model.ransack(params[:q]).result.page(page).per(per_page).includes(params[:includes])
@@ -88,6 +90,10 @@ module BlCommons
     end
 
     private
+
+    def set_header_locale
+      I18n.locale = request.headers['Locale'] if request.headers['Locale']
+    end
 
     def page
       params[:page] || 1
