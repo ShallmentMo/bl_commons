@@ -5,12 +5,24 @@ module BlCommons
     extend ActiveSupport::Concern
 
     included do
-      belongs_to :role, optional: true
+      belongs_to :role, optional: true, dependent: :destroy
+      after_create :set_role, if: -> { role.nil? }
+      delegate :computed_permissions, to: :role
+      delegate :permissions, to: :role
+
+      accepts_nested_attributes_for :role
     end
 
     def role_permissions
       role = self.role || Role.new
       permitted_resources(role.permissions)
+    end
+
+    def set_role
+      role = self.create_role(
+        name: "用户权限",
+        permissions_attributes: generate_role_permissions
+      )
     end
 
     def generate_role_permissions
