@@ -22,7 +22,12 @@ module BlCommons
       # validation macros
 
       # callbacks
-      after_commit :bl_sync_resource, if: -> { bl_sync_resource? }
+      after_create_commit do
+        bl_sync_resource
+      end
+      after_update_commit do
+        bl_sync_resource if bl_sync_resource?
+      end
 
       # other macros
 
