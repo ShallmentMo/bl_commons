@@ -15,7 +15,7 @@ module BlCommons
 
     def self.set_attributes(object, params)
       params.each do |k, v|
-       next unless object.respond_to?(:"#{k}=")
+       next if !object.respond_to?(:"#{k}=") || k == 'id'
 
        object.send(:"#{k}=", v)
       end
