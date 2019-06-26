@@ -11,6 +11,7 @@ module BlCommons
         attributes = options.fetch(:attributes, [])
         node = options.fetch(:node)
         prefix = options.fetch(:prefix, '')
+        query = options.fetch(:query, {})
 
         delegator = prefix.present? ? prefix : name
         full_name = "bl_remote_delegator_#{delegator}"
@@ -20,9 +21,12 @@ module BlCommons
             return instance_variable_get("@#{full_name}")
           end
 
-          resp = BlCommons::BlResources.public_send(node).fetch("/#{name}/#{public_send(foreign_key)}", attributes: attributes)
+          query_options = { attributes: attributes }
+          query_options = query_options.merge(query.call(self)) if query.present?
+          resp = BlCommons::BlResources.public_send(node).fetch("/#{name}", query_options)
 
-          instance_variable_set("@#{full_name}", OpenStruct.new(resp.transform_values! { |v| YAML.load(v) }))
+          raise "节点不存在该数据" if resp[0].blank?
+          instance_variable_set("@#{full_name}", OpenStruct.new(resp[0].transform_values! { |v| YAML.load(v) }))
         end
 
         delegate(*attributes, to: full_name, prefix: prefix)
