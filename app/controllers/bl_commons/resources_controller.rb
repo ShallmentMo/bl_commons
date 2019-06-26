@@ -81,11 +81,35 @@ module BlCommons
       render json: { error_message: e.message }
     end
 
+    # TODO: 鉴权
+    def batch_sync
+      grfk = "#{model.model_name.singular}_id"
+
+      params[:collection].each do |item|
+        object = model.find_by(grfk.to_s => item.dig(grfk))
+
+        # 如果没找到资源则触发 job
+        unless object
+          BlCommons::PublishMissingResourceJob.perform_later(params[:resource_name], item.to_unsafe_h)
+
+          next
+        end
+
+        BlCommons::BlResources.set_attributes(object, item['resource_params'])
+
+        object.save
+      end
+
+      render json: {}
+    rescue StandardError => e
+      render json: { error_message: e.message }
+    end
+
+    # TODO: 鉴权
     def require_sync
       collection = model.ransack(params[:q]).result
-      collection.find_each do |object|
-        object.send(:bl_sync_resource) if object.class.private_method_defined?(:bl_sync_resource)
-      end
+      collection.bl_sync_resources
+
       render json: {}
     end
 

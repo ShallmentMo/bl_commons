@@ -66,6 +66,16 @@ module BlCommons
     end
 
     class_methods do
+      def bl_sync_resources
+        BlCommons::SyncResourcesJob.perform_later(model_name.name, pluck(:id))
+      end
+
+      def bl_sync_resource_nodes
+        bl_sync_resource_node_names.map do |name|
+          BlCommons::BlResources.public_send(name)
+        end
+      end
+
       def bl_sync_resource(options)
         self.bl_sync_resource_name =
           options.fetch(:name, model_name.plural)
