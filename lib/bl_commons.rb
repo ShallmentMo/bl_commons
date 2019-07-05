@@ -3,6 +3,29 @@
 require 'bl_commons/engine'
 
 module BlCommons
+  LOGISTIC_COMPANY_MAPPINGS = {
+    '邮政包裹/平邮' => 'youzhengguonei',
+    '邮政国际包裹' => 'youzhengguoji',
+    'EMS' => 'ems',
+    '顺丰' => 'shunfeng',
+    '申通' => 'shentong',
+    '圆通' => 'yuantong',
+    '中通' => 'zhongtong',
+    '汇通' => 'huitongkuaidi',
+    '韵达' => 'yunda',
+    '宅急' => 'zhaijisong',
+    '天天' => 'tiantian',
+    '德邦' => 'debangwuliu',
+    '国通' => 'guotongkuaidi',
+    '中铁物流' => 'zhongtiewuliu',
+    '中铁快运' => 'ztky',
+    '能达' => 'ganzhongnengda',
+    '优速' => 'youshuwuliu',
+    '全峰' => 'quanfengkuaidi',
+    '京东' => 'jd'
+  }.freeze
+  LOGISTIC_COMPANIES = LOGISTIC_COMPANY_MAPPINGS.keys.freeze
+
   def self.redis
     return @redis if @redis
 
