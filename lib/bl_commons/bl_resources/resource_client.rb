@@ -1,14 +1,21 @@
 # frozen_string_literal: true
 
 require 'httparty'
+require 'persistent_httparty'
 
 module BlCommons
   module BlResources
     class ResourceClient
       include HTTParty
+      persistent_connection_adapter
+
       class_attribute :name
 
       def initialize(host: '', name: '')
+        self.class.digest_auth(
+          BlCommons::BlResources.auth_username,
+          BlCommons::BlResources.auth_password
+        )
         self.class.base_uri "#{host}/bl_resources"
         self.name = name
       end

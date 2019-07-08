@@ -2,9 +2,12 @@
 
 module BlCommons
   class ResourcesController < ActionController::API
+    include ActionController::HttpAuthentication::Digest::ControllerMethods
+
     before_action :set_header_locale
 
-    # TODO: 鉴权
+    before_action :authenticate
+
     def index
       collection = model.ransack(params[:q]).result.page(page).per(per_page).includes(params[:includes])
 
@@ -13,14 +16,12 @@ module BlCommons
       render json: { error_message: e.message }
     end
 
-    # TODO: 鉴权
     def show
       render json: parse_resource(model.find(params[:id]))
     rescue StandardError => e
       render json: { error_message: e.message }
     end
 
-    # TODO: 鉴权
     def create
       object = model.new(params['resource_params'].permit!)
 
@@ -33,7 +34,6 @@ module BlCommons
       render json: { error_message: e.message }
     end
 
-    # TODO: 鉴权
     def update
       object = model.find(params[:id])
 
@@ -46,7 +46,6 @@ module BlCommons
       render json: { error_message: e.message }
     end
 
-    # TODO: 鉴权
     def destroy
       object = model.find(params[:id])
 
@@ -59,7 +58,6 @@ module BlCommons
       render json: { error_message: e.message }
     end
 
-    # TODO: 鉴权
     def sync
       grfk = "#{model.model_name.singular}_id"
       object = model.find_by(grfk.to_s => params.dig(grfk))
@@ -81,7 +79,6 @@ module BlCommons
       render json: { error_message: e.message }
     end
 
-    # TODO: 鉴权
     def batch_sync
       grfk = "#{model.model_name.singular}_id"
 
@@ -105,7 +102,6 @@ module BlCommons
       render json: { error_message: e.message }
     end
 
-    # TODO: 鉴权
     def require_sync
       collection = model.ransack(params[:q]).result
       collection.bl_sync_resources
@@ -114,6 +110,13 @@ module BlCommons
     end
 
     private
+
+    def authenticate
+      authenticate_or_request_with_http_digest(BlCommons::BlResources.auth_realm) do |username|
+        BlCommons::BlResources.auth_username == username &&
+          BlCommons::BlResources.auth_password
+      end
+    end
 
     def set_header_locale
       I18n.locale = request.headers['Locale'] if request.headers['Locale']
