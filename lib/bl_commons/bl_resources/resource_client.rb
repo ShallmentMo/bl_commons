@@ -7,7 +7,6 @@ module BlCommons
   module BlResources
     class ResourceClient
       include HTTParty
-      persistent_connection_adapter
 
       class_attribute :name
 
@@ -16,6 +15,7 @@ module BlCommons
           BlCommons::BlResources.auth_username,
           BlCommons::BlResources.auth_password
         )
+        self.class.persistent_connection_adapter name: name.to_s
         self.class.base_uri "#{host}/bl_resources"
         self.name = name
       end
