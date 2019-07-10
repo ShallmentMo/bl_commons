@@ -8,7 +8,6 @@ module BlCommons
     def self.md5_auth_password(password)
       Digest::MD5.hexdigest([
         auth_username,
-        auth_realm,
         password
       ].join(':'))
     end
