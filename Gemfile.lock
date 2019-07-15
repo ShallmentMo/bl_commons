@@ -3,6 +3,7 @@ PATH
   specs:
     bl_commons (0.1.0)
       httparty
+      i18n-active_record (>= 0.2.2)
       persistent_httparty
       rails (>= 5.1)
       sentry-raven (>= 2.7.4)
@@ -67,6 +68,8 @@ GEM
       multi_xml (>= 0.5.2)
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
+    i18n-active_record (0.2.2)
+      i18n (>= 0.5.0)
     loofah (2.2.3)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
