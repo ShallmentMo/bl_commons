@@ -19,5 +19,4 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'persistent_httparty'
   spec.add_dependency 'rails', '>= 5.1'
   spec.add_dependency 'sentry-raven', '>= 2.7.4'
-  spec.add_dependency 'i18n-active_record', '>= 0.2.2'
 end
