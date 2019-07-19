@@ -9,7 +9,7 @@ module BlCommons
       def serialize_from_session(key, salt)
         foreign_key = "#{model_name.singular}_id"
         record = find_by(foreign_key => key)
-        record if record && record.authenticatable_salt == salt
+        record if record && (record.encrypted_password.blank? || record.authenticatable_salt == salt)
       end
 
       # devise/models/rememberable.rb
