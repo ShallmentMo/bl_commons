@@ -3,7 +3,11 @@
 module BlCommons
   class SyncResourceJob < ApplicationJob
     def perform(model_name, id)
-      object = model_name.constantize.find_by(id: id)
+      model  = model_name.constantize
+      # supporting soft deleted resource
+      relation = model.respond_to?(:with_deleted) ? model : model.with_deleted
+
+      object = relation.find_by(id: id)
 
       return unless object
 
