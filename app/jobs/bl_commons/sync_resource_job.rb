@@ -5,7 +5,7 @@ module BlCommons
     def perform(model_name, id)
       model  = model_name.constantize
       # supporting soft deleted resource
-      relation = model.respond_to?(:with_deleted) ? model : model.with_deleted
+      relation = model.respond_to?(:with_deleted) ? model.with_deleted : model
 
       object = relation.find_by(id: id)
 
