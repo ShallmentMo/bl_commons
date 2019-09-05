@@ -14,7 +14,8 @@ module BlCommons
         :bl_sync_resource_name,
         :bl_sync_resource_foreign_key,
         :bl_sync_resource_attributes,
-        :bl_sync_resource_node_names
+        :bl_sync_resource_node_names,
+        :bl_sync_resource_batch_size
       )
 
       # association macros
@@ -84,6 +85,7 @@ module BlCommons
         self.bl_sync_resource_attributes =
           options.fetch(:attributes, [])
         self.bl_sync_resource_node_names = options.fetch(:nodes, [])
+        self.bl_sync_resource_batch_size = options.fetch(:batch_size, 100)
       end
     end
   end
